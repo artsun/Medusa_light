@@ -1,0 +1,54 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Medusa Light",
+    "version" : "v1"
+  },
+  "paths" : {
+    "/v1/news/" : {
+      "get" : {
+        "description" : "Список всех публикаций",
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/News"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "News" : {
+        "type" : "object",
+        "properties" : {
+          "subject" : {
+            "type" : "string",
+            "description" : "Название",
+            "example" : "Новость1"
+          },
+          "content" : {
+            "type" : "string",
+            "description" : "Описание",
+            "example" : "что-то новенькое случилось"
+          },
+          "date" : {
+            "type" : "string",
+            "format" : "date",
+            "description" : "Дата",
+            "example" : "2021-12-29"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+version: '3.3'
+services:
+  database:
+    image: postgres:13
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./web/initial/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    restart: always
+    networks:
+      - web-network
+
+  web:
+    image: web:dev
+    depends_on:
+      - database
+    build:
+      dockerfile: ./web/Dockerfile
+      context: .
+    volumes:
+      - ./static:/web/static
+    env_file:
+      - .env
+    networks:
+      - web-network
+
+  server:
+    image: nginx:1.21
+    depends_on:
+      - web
+    volumes:
+      - ./web/server/nginx.conf:/etc/nginx/nginx.conf
+      - ./web/server/web.conf:/etc/nginx/conf.d/web.conf
+      - ./static:/www/static
+    ports:
+      - "80:80"
+    restart: on-failure
+    networks:
+      - web-network
+volumes:
+  data:
+  static:
+networks:
+    web-network:
+        driver: bridge
